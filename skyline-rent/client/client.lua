@@ -1,6 +1,5 @@
 local activeRental = false
 local rentalTimeLeft = 0
-local notificationActive = false
 
 CreateThread(function()
     for _, location in ipairs(Config.RentalLocations) do
@@ -67,7 +66,7 @@ function getClosestSpawnPoint(playerCoords)
     local closestPoint = nil
 
     for _, spawnPoint in ipairs(Config.VehicleSpawnPoints) do
-        local pointCoords = vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z)
+        local pointCoords = Config.VehicleSpawnPoints
         local distance = #(playerCoords - pointCoords)
         if distance < closestDistance then
             closestDistance = distance
@@ -137,22 +136,19 @@ AddEventHandler("vehicleRental:success", function(vehicle, minutes)
     activeRental = true
 
     CreateThread(function()
-        while activeRental and rentalTimeLeft > 0 do
-            Wait(1000)
-            rentalTimeLeft = rentalTimeLeft - 1
+        rentalTimeLeft = rentalTimeLeft - 1
 
-            local minutes = math.floor(rentalTimeLeft / 60)
-            local seconds = rentalTimeLeft % 60
-            local timeText = string.format("Hátralévő bérlési idő: %02d:%02d", minutes, seconds)
+        local minutes = math.floor(rentalTimeLeft / 60)
+        local seconds = rentalTimeLeft % 60
+        local timeText = string.format("Hátralévő bérlési idő: %02d:%02d", minutes, seconds)
 
-            lib.notify({
-                title = "Bérlés időzítő",
-                description = timeText,
-                type = "info",
-                duration = 1000,
-                keepOpen = true 
-            })
-        end
+        lib.notify({
+            title = "Bérlés időzítő",
+            description = timeText,
+            type = "info",
+            duration = minutes,
+            keepOpen = true 
+        })
 
         if rentalTimeLeft <= 0 and DoesEntityExist(rentedVehicle) then
             DeleteEntity(rentedVehicle)

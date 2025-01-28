@@ -1,7 +1,3 @@
--- print("[Valami RolePlay] - A Bérlő Script sikeresen elindult!")
-
-ESX = exports["es_extended"]:getSharedObject()
-
 RegisterNetEvent("vehicleRental:pay")
 AddEventHandler("vehicleRental:pay", function(cost, vehicle, minutes)
     local xPlayer = ESX.GetPlayerFromId(source)
